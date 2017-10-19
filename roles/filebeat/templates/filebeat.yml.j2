@@ -1,0 +1,20 @@
+filebeat.prospectors:
+- input_type: log
+  paths:
+    {% for path in filebeat_paths %}
+    - {{ path }}
+    {% endfor %}
+
+name: {{ filebeat_name }}
+
+tags: [{{ filebeat_tags }}]
+
+fields:
+  env: {{ filebeat_env }}
+
+output.elasticsearch:
+  hosts: [{{ filebeat_es_ingest_nodes }}]
+  index: {{ filebeat_es_index }}
+  pipeline: {{ filebeat_es_pipeline }}
+
+#logging.level: debug

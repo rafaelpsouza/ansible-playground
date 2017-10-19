@@ -1,0 +1,7 @@
+- name: restart kibana
+  service: name=kibana state=restarted enabled=yes
+  register: kibana_restarted
+
+- name: install x-pack
+  command: sudo -u kibana /usr/share/kibana/bin/kibana-plugin install x-pack
+  register: xpack-installed

@@ -1,0 +1,41 @@
+---
+- name: Add Elasticsearch packages apt key.
+  apt_key:
+    url: https://packages.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add curator repository
+  apt_repository: repo="deb [arch=amd64] http://packages.elastic.co/curator/5/debian stable main" state=present
+
+- name: Make sure elasticsearch-curator is present
+  apt: name=elasticsearch-curator state=present
+
+- name: Create curator actions path
+  file: path=/etc/curator/actions state=directory
+
+- name: Copy curator config file
+  copy: src=curator.yml dest=/etc/curator/curator.yml
+
+- name: Copy curator delete action
+  template: src=delete_indices.yml.j2 dest=/etc/curator/actions/delete_indices.yml mode=0744
+  when: curator_delete_indices
+
+- name: Copy curator rollover action
+  template: src=rollover.yml.j2 dest=/etc/curator/actions/rollover.yml mode=0744
+  when: curator_rollover
+
+- name: Cron curator delete action
+  cron: 
+    name: "Curator Delete"
+    hour: "04"
+    minute: "30"
+    job: "/usr/bin/curator --config /etc/curator/curator.yml /etc/curator/actions/delete_indices.yml"
+  when: curator_delete_indices
+
+- name: Cron curator rollover action
+  cron: 
+    name: "Curator Rollover"
+    hour: "03"
+    minute: "30"
+    job: "/usr/bin/curator --config /etc/curator/curator.yml /etc/curator/actions/rollover.yml"
+  when: curator_rollover

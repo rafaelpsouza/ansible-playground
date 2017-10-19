@@ -1,0 +1,34 @@
+global
+    log /var/lib/haproxy/dev/log local0 info
+    daemon
+
+defaults    
+    mode http
+    option httplog
+    log global
+    option forwardfor
+    option http-server-close
+    timeout connect 3000
+    timeout server 5000
+    timeout client 5000
+
+frontend http-in
+   bind *:80
+   reqadd X-Forwarded-Proto:\ http
+   option httplog
+   log global
+   capture request header APP-NAME len 15
+   capture request header Content-Type len 25   
+
+   acl url_example path_beg /example
+   use_backend service-backend if url_example
+
+frontend www-stats
+  bind *:2020
+  stats enable
+  stats uri /stats
+
+backend service-backend
+   balance roundrobin
+   server service-backend-1 localhost:8080 check
+   server service-backend-2 localhost:8080 check

@@ -1,0 +1,17 @@
+- name: Install apt-transport-https to support https APT downloads
+  apt: name=apt-transport-https state=present
+
+- name: Make sure elasticsearch apt key is present
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Make sure elasticsearch repository is present
+  apt_repository: repo="deb https://artifacts.elastic.co/packages/5.x/apt stable main" state=present
+
+- name: Make sure filebeat is present
+  apt: name=filebeat state=present  
+
+- name: Filebeat configuration
+  template: src=filebeat.yml.j2 dest=/etc/filebeat/filebeat.yml mode=0744
+  notify: restart filebeat

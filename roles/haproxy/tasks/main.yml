@@ -1,0 +1,33 @@
+---
+  - name: Make sure haproxy repo is present
+    apt_repository: repo="ppa:vbernat/haproxy-1.7"
+
+  - name: Ensure HAProxy is present
+    apt: name=haproxy state=latest update_cache=yes
+
+  - name: HAProxy configuration
+    template: src=haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg mode=0744
+
+  - name: Make sure HAProxy is enabled
+    lineinfile: dest=/etc/default/haproxy regexp="ENABLED=0" line="ENABLED=1"
+
+  - name: Ensure haproxy service start at boot
+    service: name=haproxy enabled=yes
+
+  - name: Ensure rsyslog is present
+    apt: name=rsyslog state=present
+
+  - name: HAProxy Log configuration
+    copy: src=haproxy.conf dest=/etc/rsyslog.d/haproxy.conf mode=0744 backup=no
+
+  - name: Configure rsyslog 1
+    lineinfile: dest=/etc/rsyslog.conf line="$ModLoad imudp"
+
+  - name: Configure rsyslog 2
+    lineinfile: dest=/etc/rsyslog.conf line="$UDPServerAddress 127.0.0.1"
+
+  - name: Configure rsyslog 3
+    lineinfile: dest=/etc/rsyslog.conf line="$UDPServerRun 514"
+    notify: 
+      - restart rsyslog
+      - restart haproxy

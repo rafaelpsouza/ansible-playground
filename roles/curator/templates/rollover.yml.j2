@@ -1,0 +1,9 @@
+actions:
+  1:
+    action: rollover
+    description: "Rollover the index associated with index active-logs"
+    options:
+      name: {{ curator_rollover_alias }}
+      conditions:
+        max_age: {{ curator_rollover_max_age }}
+        max_docs: {{ curator_rollover_max_docs }}

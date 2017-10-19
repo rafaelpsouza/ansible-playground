@@ -1,0 +1,7 @@
+- name: restart haproxy
+  service: name=haproxy state=restarted enabled=yes
+  register: haproxy_restarted
+
+- name: restart rsyslog
+  service: name=rsyslog state=restarted enabled=yes
+  register: rsyslog_restarted

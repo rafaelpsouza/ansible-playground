@@ -1,0 +1,14 @@
+- name: Load Balancer
+  hosts: loadbalancer
+  become: yes
+  roles:
+    - haproxy
+    - filebeat
+  vars:
+    filebeat_paths: ["/var/log/haproxy.log"]
+    filebeat_name: "loadbalancer"
+    filebeat_tags: "\"lb\", \"web-tier\", \"haproxy\""
+    filebeat_env: "homolog"
+    filebeat_es_ingest_nodes: "\"192.168.80.3:9200\""
+    filebeat_es_index: "active-logs"
+    filebeat_es_pipeline: "haproxy"

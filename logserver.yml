@@ -1,0 +1,26 @@
+- name: Log server with elasticsearch + kibana
+  hosts: logserver
+  become: yes
+  roles:
+    - elasticsearch    
+    - curator # https://www.elastic.co/blog/managing-time-based-indices-efficiently
+    - kibana
+  vars:
+    es_heap_size: 1g
+    es_version: "5.6.3"
+    es_instance_name: "node1"
+    es_enable_xpack: True
+    es_templates: True
+    es_pipelines: True
+    es_xpack_features: ["alerting", "ml"]
+    es_config: {
+      node.name: "node1", 
+      cluster.name: "logserver-cluster",
+      network.host: 0.0.0.0
+    }
+    curator_rollover: True
+    curator_rollover_alias: "active-logs"
+    curator_rollover_max_age: "5d"
+    curator_rollover_max_docs: 1000000
+    curator_delete_indices: True
+    curator_delete_older_than: 15
