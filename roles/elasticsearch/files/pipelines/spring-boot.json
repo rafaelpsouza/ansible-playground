@@ -1,0 +1,11 @@
+{
+  "description" : "Ingest pipeline for Spring Boot Apps",
+  "processors" : [
+    {
+      "grok": {
+        "field": "message",
+        "patterns": ["(?<timestamp>%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME})  %{LOGLEVEL:level} %{NUMBER:pid} --- \\[(?<thread>[A-Za-z0-9-]+)\\] [A-Za-z0-9.]*\\.(?<class>[A-Za-z0-9#_]+)\\s*:\\s+(?<logmessage>.*)"]
+      }
+    }
+  ]
+}
