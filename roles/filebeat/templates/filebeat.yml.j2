@@ -4,6 +4,9 @@ filebeat.prospectors:
     {% for path in filebeat_paths %}
     - {{ path }}
     {% endfor %}
+  #multiline.pattern: '^(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})'
+  #multiline.negate: true
+  #multiline.match: after
 
 name: {{ filebeat_name }}
 

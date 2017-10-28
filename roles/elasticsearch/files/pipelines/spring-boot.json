@@ -4,7 +4,7 @@
     {
       "grok": {
         "field": "message",
-        "patterns": ["(?<timestamp>%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME})  %{LOGLEVEL:level} %{NUMBER:pid} --- \\[(?<thread>[A-Za-z0-9-]+)\\] [A-Za-z0-9.]*\\.(?<class>[A-Za-z0-9#_]+)\\s*:\\s+(?<logmessage>.*)"]
+        "patterns": ["(?<timestamp>%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME})\\s+%{LOGLEVEL:level}\\s+%{NUMBER:pid}\\s+---\\s+\\[\\s*%{DATA:thread}\\s*\\]\\s+%{DATA:class}\\s*:\\s*%{DATA:message}$"]
       }
     }
   ]
