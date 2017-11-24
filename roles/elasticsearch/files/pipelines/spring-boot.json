@@ -4,7 +4,15 @@
     {
       "grok": {
         "field": "message",
-        "patterns": ["(?<timestamp>%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME})\\s+%{LOGLEVEL:level}\\s+%{NUMBER:pid}\\s+---\\s+\\[\\s*%{DATA:thread}\\s*\\]\\s+%{DATA:class}\\s*:\\s*%{DATA:message}$"]
+        "patterns": ["(?<timestamp>%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME})\\s+%{LOGLEVEL:level}\\s+%{NUMBER:pid}\\s+---\\s+\\[\\s*%{DATA:thread}\\s*\\]\\s+%{DATA:class}\\s*:\\s*%{DATA:message}$"],
+      	"on_failure": [
+          {
+            "set" : {
+              "field" : "logserver-pipeline-error",
+              "value" : "{{ _ingest.on_failure_message }}"
+            }
+          }
+      	]
       }
     }
   ]
